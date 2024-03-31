@@ -31,10 +31,8 @@ jobs:
       run: |
         cd frontend/
         npm run build
+        cd ..
 
-  build-image:
-    runs-on: ubuntu-latest
-    steps:
     - name: Build Docker image
       run: |
         cd frontend/
