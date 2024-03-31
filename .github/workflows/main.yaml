@@ -27,12 +27,6 @@ jobs:
         cd ..
         echo 'Dependencies Installed'
 
-    - name: Build frontend
-      run: |
-        cd frontend/
-        npm run build
-        cd ..
-
     - name: Build Docker image
       run: |
         cd frontend/
