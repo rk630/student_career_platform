@@ -64,13 +64,6 @@ app.get('/fetch-resume/uploads/:filename', (req, res) => {
   res.sendFile(filePath);
 });
 
-
-
-
-
-
-
-
 app.listen(Port, (error) => {
     if (!error) {
 
