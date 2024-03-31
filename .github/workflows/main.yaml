@@ -22,6 +22,7 @@ jobs:
       run: |
         cd frontend/
         npm install --force
+        cd ..
         cd backend/
         npm install --force
 
@@ -39,6 +40,7 @@ jobs:
         docker tag caps-front:latest mahi2k22/caps-front:latest
         docker push mahi2k22/caps-front:latest
 
-        cd backend
+        cd ..
+        cd backend/
         docker tag caps-back:latest mahi2k22/caps-back:latest
         docker push mahi2k22/caps-back:latest
