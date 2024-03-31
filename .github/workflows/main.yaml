@@ -24,6 +24,8 @@ jobs:
         cd ..
         cd backend/
         npm install --force
+        cd ..
+        echo 'Dependencies Installed'
 
     - name: Build frontend
       run: |
@@ -40,3 +42,5 @@ jobs:
         cd ..
         cd backend/
         docker build . -t caps-back:latest
+        cd ..
+        echo 'Docker Image Build Completed'
