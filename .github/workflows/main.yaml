@@ -1,4 +1,4 @@
-name: Node.js CI with Docker
+name: Career platform with Docker
 
 on:
   pull_request:
@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -26,6 +25,14 @@ jobs:
         cd backend/
         npm install --force
 
+    - name: Build frontend
+      run: |
+        cd frontend/
+        npm run build
+
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
     - name: Build Docker image
       run: |
         cd frontend/
