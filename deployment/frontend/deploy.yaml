@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caps-front
+  labels:
+    app: caps-front
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: caps-front
+  template:
+    metadata:
+      labels:
+        app: caps-front
+    spec:
+      containers:
+      - name: caps-front
+        image: mahi2k22/caps-front:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          ports:
+          - containerPort: 80
+          env:
+            - name: BACKEND_URL
+              keysecretKeyRef:
+                name: caps-secret
+                key: back-end-url
+            - name: PORT
+              value: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: caps-front-service
+spec:
+  selector:
+    app: caps-front
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: LoadBalancer

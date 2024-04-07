@@ -1,4 +1,4 @@
-name: Node.js CI with Docker
+name: Career platform with Docker
 
 on:
   pull_request:
@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -22,23 +21,18 @@ jobs:
       run: |
         cd frontend/
         npm install --force
+        cd ..
         cd backend/
         npm install --force
+        cd ..
+        echo 'Dependencies Installed'
 
     - name: Build Docker image
       run: |
         cd frontend/
         docker build . -t caps-front:latest
-        cd frontend/
+        cd ..
+        cd backend/
         docker build . -t caps-back:latest
-      
-    - name: Push Docker image
-      run: |
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-        cd frontend
-        docker tag caps-front:latest mahi2k22/caps-front:latest
-        docker push mahi2k22/caps-front:latest
-
-        cd backend
-        docker tag caps-back:latest mahi2k22/caps-back:latest
-        docker push mahi2k22/caps-back:latest
+        cd ..
+        echo 'Docker Image Build Completed'
