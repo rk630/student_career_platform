@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         FRONTEND_IMAGE = 'mahi2k22/caps-front'
         BACKEND_IMAGE = 'mahi2k22/caps-back'
@@ -9,72 +8,73 @@ pipeline {
         FRONTEND_KUBE_DEPLOYMENT = 'caps-front'
         BACKEND_KUBE_DEPLOYMENT = 'caps-back'
         CLUSTER_NAME = 'caps-career'
-        AWS_REGION = ''
+        AWS_REGION = 'ap-south-1'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout'){
             steps {
                 git "$GIT_REPOSITORY_URL"
             }
         }
-
-        stage('Build') {
+        stage('Build'){
             steps {
-                dir('frontend') {
+                dir('frontend'){
                     sh 'npm install --force'
                     sh 'npm run build'
                 }
             }
             steps {
-                dir('backend') {
+                dir('backend'){
                     sh 'npm install --force'
                     sh 'npm run build'
                 }
             }
         }
-
-        stage('Docker Build') {
+        stage('Docker Build'){
             steps {
-                dir('frontend') {
+                dir('frontend'){
                     sh 'docker build -t $FRONTEND_IMAGE .'
                 }
-                dir('backend') {
+                dir('backend'){
                     sh 'docker build -t $BACKEND_IMAGE .'
                 }
             }
         }
-
-        stage('Docker Push') {
+        stage('Docker Push'){
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]){
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-
-                    sh 'docker push $FRONTEND_IMAGE'
-                    sh 'docker push $BACKEND_IMAGE'
+                    dir('frontend'){
+                        sh 'docker push $FRONTEND_IMAGE'
+                    }
+                    dir('backend'){
+                        sh 'docker push $BACKEND_IMAGE'
+                    }
                 }
             }
         }
-
-        stage('Configure Kubernetes') {
+        stage('Configure Kubernetes'){
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'aws-credentials', variable: 'AWS_CREDENTIALS')]) {
-                        
+                    withCredentials([file(credentialsId: 'aws-credentials', variable: 'AWS_CREDENTIALS')]){
                         sh "eksctl utils write-kubeconfig --region=$AWS_REGION --name=$CLUSTER_NAME --profile=$AWS_CREDENTIALS"
                     }
                 }
             }
         }
-
-        stage('Deploy to Kubernetes') {
+        stage('Apply Secrets'){
+            steps {
+                sh "kubectl apply -f deployment/secrets/secret.yaml -n $KUBE_NAMESPACE"
+            }
+        }
+        stage('Deploy to Kubernetes'){
             steps {
                 script {
                     def frontendImage = "$FRONTEND_IMAGE:$BUILD_NUMBER"
                     def backendImage = "$BACKEND_IMAGE:$BUILD_NUMBER"
                     
                     sh "kubectl set image deployment/$FRONTEND_DEPLOYMENT $FRONTEND_DEPLOYMENT=$frontendImage -n $KUBE_NAMESPACE"
-                    
                     sh "kubectl set image deployment/$BACKEND_DEPLOYMENT $BACKEND_DEPLOYMENT=$backendImage -n $KUBE_NAMESPACE"
                 }
             }
