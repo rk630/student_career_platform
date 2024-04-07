@@ -1,23 +1,13 @@
 # Student_career_platform
 This application is for the student to create their resume and also act as a dashboard for presenting their work here.
 
+## Architecture Diagram
+![Architecture Diagram](Vired_Store_Architecture.jpg)
 
-GITHUB ACTIONS
+## Workflow
+![Workflow](ViredStoreWorkflow.png)
 
-BACKEND - 
-- jenkins integration with github actions 
-- build a docker image using docker file
-- push that docker image to docker repo
-- Fetch the docker repo and deploy it to EC2
-- create a autoscaling group
-- add monitoring and autoscaling
-- grafana dashboards using prometheus 
+## Deployment Files
+1. [Frontend Deployment Files](deployment/frontend/)
 
-FRONTEND - 
-- jenkins integration with github actions 
-- build a docker image using docker file
-- push that docker image to docker repo
-- Fetch the docker repo and deploy it to EC2
-- create a autoscaling group
-- add monitoring and autoscaling
-- grafana dashboards using prometheus 
+2. [Backend Deployment Files](deployment/backend/)
