@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: caps-back
-        image: mahi2k22/caps-basck:latest
+        image: mahi2k22/caps-back:latest
         resources:
           limits:
             memory: "128Mi"
